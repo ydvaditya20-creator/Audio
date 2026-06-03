@@ -428,3 +428,26 @@ a.download =
 a.click();
 
 };
+async function testAPI() {
+  try {
+    const res = await fetch(
+      "https://audio-tspd.onrender.com/tts",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          text: "Hello World"
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    alert("Success\nAudio length: " + data.audio.length);
+
+  } catch (e) {
+    alert("Error: " + e.message);
+  }
+}
