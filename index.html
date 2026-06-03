@@ -130,6 +130,11 @@
 // =========================================================================
 const GOOGLE_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwkcQTvtcQ3KaBCsEQPMkdClUCxfarDnWMNhMQxRu421ljlDC_Flg55ycSg6cXswuml/exec"; 
 const RENDER_API_URL = "https://audio-tspd.onrender.com"; 
+<!-- ========================================== -->
+<!-- HTML5 FRONTEND CODE - PART 2 (REDIRECTS RESOLVER) -->
+<!-- ========================================== -->
+
+
 
 const initialStartBtn = document.getElementById('initialStartBtn');
 const inputForm = document.getElementById('inputForm');
@@ -138,13 +143,11 @@ const statusBox = document.getElementById('statusBox');
 const statusDiv = document.getElementById('status');
 const previewArea = document.getElementById('previewArea');
 
-// Event 1: Setup panel unfold layout form trigger
 initialStartBtn.addEventListener('click', () => {
     initialStartBtn.style.display = 'none';
     inputForm.style.display = 'block';
 });
 
-// Event 2: Multiple sequence dynamic loops framework execution
 generateBtn.addEventListener('click', async () => {
     const category = document.getElementById('categoryInput').value.trim();
     const totalQuestions = parseInt(document.getElementById('questionCount').value) || 1;
@@ -155,15 +158,24 @@ generateBtn.addEventListener('click', async () => {
     
     for (let i = 1; i <= totalQuestions; i++) {
         previewArea.style.display = 'none';
-        statusDiv.innerHTML = `🔄 <b>[Sawal ${i}/${totalQuestions}]</b> Google Sheet API active. Row content write kiya ja raha hai...`;
+        statusDiv.innerHTML = `🔄 <b>[Sawal ${i}/${totalQuestions}]</b> Google Script framework network packet send kiya ja raha hai...`;
         
         try {
-            // Step A: Requesting row script database entry parameters logs
-            const sheetResponse = await fetch(`${GOOGLE_WEBAPP_URL}?category=${encodeURIComponent(category)}`);
-            const quizData = await sheetResponse.json();
-            if (quizData.status !== "success") throw new Error("Google Script executing failure.");
+            const finalSheetApiUrl = `${GOOGLE_WEBAPP_URL}?category=${encodeURIComponent(category)}`;
             
-            // Updating user preview screen panel components live
+            // 💡 CRITICAL BYPASS: Google Web App Redirect structure handling logic configuration
+            const sheetResponse = await fetch(finalSheetApiUrl, {
+                method: "GET",
+                mode: "cors", // Mandatory configuration token flag
+                headers: { "Accept": "application/json" }
+            });
+            
+            if (!sheetResponse.ok) throw new Error("Network layer communication breakdown.");
+            
+            const quizData = await sheetResponse.json();
+            if (!quizData || quizData.status !== "success") throw new Error("Google database credentials tracking failed.");
+            
+            // Interface metrics mapping load updates
             previewArea.style.display = 'block';
             document.getElementById('pCat').innerText = "Category: " + quizData.category;
             document.getElementById('pQ').innerText = quizData.question;
@@ -172,29 +184,31 @@ generateBtn.addEventListener('click', async () => {
             document.getElementById('pC').innerText = "C) " + quizData.options[2];
             document.getElementById('pD').innerText = "D) " + quizData.options[3];
 
-            // Mapping speech configuration lines dialogues tracking arrays
-            const speechText = `${quizData.question}. Your options are. A, ${quizData.options[0]}. B, ${quizData.options[1]}. C, ${quizData.options[2]}. And D, ${quizData.options[3]}.`;
-            statusDiv.innerHTML = `🤖 <b>[Sawal ${i}/${totalQuestions}]</b> Row data written to sheet! Render server gTTS audio wave download kar raha hai...`;
+            const speechText = `${quizData.question}. Aapke options hain. A, ${quizData.options[0]}. B, ${quizData.options[1]}. C, ${quizData.options[2]}. Aur D, ${quizData.options[3]}.`;
+            statusDiv.innerHTML = `🤖 <b>[Sawal ${i}/${totalQuestions}]</b> ✅ Sheet me successfully data likh diya gaya! Voice rendering audio load ho rahi hai...`;
             
-            // Step B: Fetching raw dynamic memory bytes sound streams from Python API
             const audioResponse = await fetch(`${RENDER_API_URL}/generate-audio`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: speechText })
             });
             
-            if (!audioResponse.ok) throw new Error("Render pipeline communication framework failure error logging.");
+            if (!audioResponse.ok) throw new Error("Render pipeline communication framework failure.");
             
             const audioBlob = await audioResponse.blob();
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
+
             const arrayBuffer = await audioBlob.arrayBuffer();
             const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
             const audioDuration = audioBuffer.duration;
             const totalDuration = audioDuration + userTimer;
 
-            statusDiv.innerHTML = `🎬 <b>[Sawal ${i}/${totalQuestions}]</b> MP3 stream buffered sync! Multiplexing HD canvas video frame layers...`;
+            statusDiv.innerHTML = `🎬 <b>[Sawal ${i}/${totalQuestions}]</b> Voice streaming ready. Video file process ho rahi hai...`;
 
-            // Step C: Processing Web Audio Node buffers and Canvas capturing frames streams
             const canvas = document.getElementById('videoCanvas');
             const ctx = canvas.getContext('2d');
             const audioSource = audioContext.createBufferSource();
@@ -202,27 +216,33 @@ generateBtn.addEventListener('click', async () => {
             const destination = audioContext.createMediaStreamDestination();
             audioSource.connect(destination);
 
-            const canvasStream = canvas.captureStream(30); // 30 Frame Per Second capture frame rate
+            const canvasStream = canvas.captureStream(30); 
             const combinedStream = new MediaStream();
             canvasStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
             destination.stream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
 
-            const mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm;codecs=vp9,opus' });
+            let options = { mimeType: 'video/webm;codecs=vp9,opus' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: 'video/webm;codecs=vp8,opus' };
+            }
+
+            const mediaRecorder = new MediaRecorder(combinedStream, options);
             const chunks = [];
-            mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) chunks.push(e.data);
+            };
             
-            // Managing closures asynchronous promises thread locks loop shifts
             await new Promise((resolve) => {
                 mediaRecorder.onstop = () => {
                     const blob = new Blob(chunks, { type: 'video/mp4' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `Quiz_Studio_${category.replace(/\s+/g, '_')}_Video_Row_${i}_${Date.now()}.mp4`;
+                    a.download = `Quiz_Bot_Row_${i}_${Date.now()}.mp4`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    resolve(); // Breaking promise loops to move forward to next sequence indexes entries
+                    resolve(); 
                 };
 
                 mediaRecorder.start();
@@ -232,23 +252,19 @@ generateBtn.addEventListener('click', async () => {
                 function draw() {
                     const elapsed = (performance.now() - startTime) / 1000;
                     
-                    // Canvas Matrix Layer 1: Flat space layout theme blueprint background colors
                     ctx.fillStyle = "#0f172a";
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    // Canvas Matrix Layer 2: Heading Label Rendering Center Aligned
                     ctx.fillStyle = "#38bdf8";
                     ctx.font = "bold 36px Arial";
                     ctx.textAlign = "center";
                     ctx.fillText("Category: " + quizData.category, canvas.width / 2, 80);
 
-                    // Canvas Matrix Layer 3: Main text wrapping boundary tracking alignments paragraph drawing
                     ctx.fillStyle = "#ffffff";
                     ctx.font = "bold 44px Arial";
                     ctx.textAlign = "left";
                     wrapText(ctx, quizData.question, 100, 180, 1080, 60);
 
-                    // Canvas Matrix Layer 4: Four directional grid text points strings layouts mapping positions
                     ctx.font = "36px Arial";
                     ctx.fillStyle = "#cbd5e1";
                     ctx.fillText("A) " + quizData.options[0], 120, 360);
@@ -256,15 +272,13 @@ generateBtn.addEventListener('click', async () => {
                     ctx.fillText("C) " + quizData.options[2], 120, 520);
                     ctx.fillText("D) " + quizData.options[3], 120, 600);
 
-                    // Canvas Matrix Layer 5: Oral audio terminates countdown visualization system activates
                     if (elapsed > audioDuration) {
                         const remainingTimer = Math.max(0, Math.ceil(userTimer - (elapsed - audioDuration)));
-                        ctx.fillStyle = "#eab308"; // Accent countdown clock orange glow colors fill
+                        ctx.fillStyle = "#eab308"; 
                         ctx.font = "bold 52px Arial";
                         ctx.textAlign = "center";
                         ctx.fillText(`Timer: ${remainingTimer}s`, canvas.width / 2, 680);
                         
-                        // Canvas Matrix Layer 6: Bright green success answer flash layout reveal once countdown terminates
                         if (remainingTimer === 0) {
                             ctx.fillStyle = "#22c55e"; 
                             ctx.font = "bold 40px Arial";
@@ -284,15 +298,14 @@ generateBtn.addEventListener('click', async () => {
 
         } catch (err) {
             console.error(err);
-            statusDiv.innerHTML = `❌ <b>Sawal No. ${i} looping chain sequence broken!</b> Configuration URLs link metrics, ya cross-origin access blocks permissions parameters verify karein.`;
+            statusDiv.innerHTML = `❌ <b>Sawal No. ${i} executing sequence chain broken!</b> URL parameters alignment recheck karein.`;
             break; 
         }
     }
-    statusDiv.innerHTML = "✅ Process finished successfully! Saari dynamic loop videos automate hokar browser directory me save aur download ho gayi hain.";
+    statusDiv.innerHTML = "✅ Process finished successfully! Saari videos write aur download ho gayi hain.";
     generateBtn.disabled = false;
 });
 
-// Horizontal pixel sizes paragraph text wrapping math equations logic helper
 function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
     let words = text.split(' '), line = '', lines = [];
     for(let n=0; n<words.length; n++) {
@@ -302,6 +315,9 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
         } else { line = testLine; }
     }
     lines.push(line);
-       for(let i=0; i<lines.length; i++) { ctx.fillText(lines[i], x, y + (i * lineHeight)); }}
-    </script>
+    for(let i=0; i<lines.length; i++) { ctx.fillText(lines[i], x, y + (i * lineHeight)); }
+}
+</script>
 </body>
+</html>
+
