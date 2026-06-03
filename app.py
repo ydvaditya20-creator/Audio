@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from gtts import gTTS
-import tempfile
-import os
-import base64
+import tempfile, os, base64
 
 app = Flask(__name__)
+CORS(app)   # ← यह जरूरी है
+
+
 
 @app.route("/tts", methods=["POST"])
 def tts():
