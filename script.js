@@ -428,26 +428,127 @@ a.download =
 a.click();
 
 };
-async function testAPI() {
-  try {
-    const res = await fetch(
-      "https://audio-tspd.onrender.com/tts",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          text: "Hello World"
-        })
-      }
+const logBox = document.getElementById("logBox");
+
+function log(msg){
+
+  const div = document.createElement("div");
+
+  div.textContent =
+    new Date().toLocaleTimeString()
+    + " : "
+    + msg;
+
+  logBox.appendChild(div);
+
+  logBox.scrollTop =
+    logBox.scrollHeight;
+
+}
+
+async function testAPI(){
+
+  log("START");
+
+  try{
+
+    log("Preparing request");
+
+    const payload = {
+      text:"Hello World"
+    };
+
+    log("Sending request to server");
+
+    const response =
+      await fetch(
+        "https://audio-tspd.onrender.com/tts",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+            "application/json"
+          },
+          body:
+          JSON.stringify(payload)
+        }
+      );
+
+    log(
+      "Response status: "
+      + response.status
     );
 
-    const data = await res.json();
+    const text =
+      await response.text();
 
-    alert("Success\nAudio length: " + data.audio.length);
+    log(
+      "Received data length: "
+      + text.length
+    );
 
-  } catch (e) {
-    alert("Error: " + e.message);
+    let json;
+
+    try{
+
+      json =
+      JSON.parse(text);
+
+      log(
+        "JSON parsed successfully"
+      );
+
+    }
+    catch(e){
+
+      log(
+        "JSON parse failed"
+      );
+
+      log(
+        text.substring(
+          0,
+          500
+        )
+      );
+
+      return;
+
+    }
+
+    if(json.audio){
+
+      log(
+        "Audio field found"
+      );
+
+      log(
+        "Audio size: "
+        + json.audio.length
+      );
+
+    }else{
+
+      log(
+        "No audio field in response"
+      );
+
+      log(
+        JSON.stringify(json)
+      );
+
+    }
+
+    log("DONE");
+
   }
-}
+  catch(err){
+
+    log(
+      "ERROR: "
+      + err.message
+    );
+
+  }
+
+  }
