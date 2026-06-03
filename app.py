@@ -19,7 +19,7 @@ def tts():
     with tempfile.NamedTemporaryFile(delete=False,suffix=".mp3") as tmp:
         filename = tmp.name
 
-    gTTS(text=text, lang="en").save(filename)
+    gTTS(text=text, lang="hi").save(filename)
 
     with open(filename,"rb") as f:
         audio_b64 = base64.b64encode(f.read()).decode()
@@ -31,4 +31,4 @@ def tts():
     })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=10000) rt
