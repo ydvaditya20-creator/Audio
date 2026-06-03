@@ -1,66 +1,307 @@
+<!-- ========================================== -->
+<!-- HTML5 FRONTEND CODE - PART 1 (UI & LAYOUT) -->
+<!-- ========================================== -->
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>High Quality MP3 TTS Downloader</title>
+    <title>AI Automated Video Studio Bot</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f9; text-align: center; }
-        .container { max-width: 500px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        textarea { width: 100%; height: 120px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: none; box-sizing: border-box; font-size: 16px; }
-        select, button { width: 100%; padding: 12px; margin-top: 15px; border-radius: 4px; border: none; font-size: 16px; cursor: pointer; }
-        select { border: 1px solid #ccc; background: white; }
-        button { background: #ff5722; color: white; font-weight: bold; }
-        button:hover { background: #e64a19; }
-        .instructions { margin-top: 15px; background: #fff8e1; padding: 10px; border-radius: 5px; font-size: 14px; text-align: left; border-left: 5px solid #ffb300; }
+        body { 
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif; 
+            background: #0f172a; 
+            color: #f8fafc; 
+            text-align: center; 
+            padding: 50px 20px; 
+            margin: 0;
+        }
+        .container { 
+            background: #1e293b; 
+            padding: 40px; 
+            display: inline-block; 
+            border-radius: 16px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            width: 100%; 
+            max-width: 560px; 
+            box-sizing: border-box;
+        }
+        h2 { color: #38bdf8; margin-top: 0; font-size: 26px; font-weight: 700; }
+        p { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
+        
+        .form-group { margin-bottom: 22px; text-align: left; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 15px; }
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 8px; 
+            border: 1px solid #475569; 
+            font-size: 16px; 
+            box-sizing: border-box; 
+            background: #334155; 
+            color: #ffffff;
+            outline: none;
+        }
+        input:focus { border-color: #38bdf8; }
+        
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 8px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            border: none;
+            cursor: pointer; 
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+        #initialStartBtn { 
+            background: #22c55e; 
+            color: #ffffff; 
+            font-size: 20px;
+            padding: 18px;
+        }
+        #initialStartBtn:hover { background: #16a34a; transform: translateY(-1px); }
+        
+        #generateBtn { background: #38bdf8; color: #0f172a; margin-top: 15px; }
+        #generateBtn:hover { background: #0ea5e9; }
+        button:disabled { background: #64748b !important; color: #94a3b8 !important; cursor: not-allowed; transform: none !important; }
+        
+        #inputForm, .status-box, .quiz-preview { display: none; }
+        
+        .status-box { background: #334155; padding: 20px; border-radius: 8px; margin: 25px 0; font-size: 15px; border-left: 5px solid #eab308; text-align: left; line-height: 1.5; }
+        .quiz-preview { background: #111827; padding: 20px; border-radius: 10px; text-align: left; margin-top: 25px; border: 1px solid #374151; }
+        .option { color: #94a3b8; margin: 8px 0; font-size: 15px; padding-left: 5px; }
+        canvas { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Real MP3 Audio Downloader</h2>
-    <textarea id="textInput" placeholder="Yahan apna text likhein..."></textarea>
+    <h2>⚡ AI Quiz Video Studio Bot</h2>
+    <p>Auto Sheet Database Content Generator & Media Multiplexer</p>
     
-    <select id="langSelect">
-        <option value="hi">Hindi (India)</option>
-        <option value="en">English (US)</option>
-    </select>
-
-    <button onclick="loadAudio()">1. Audio Load Karein</button>
+    <!-- Phase 1: Welcome Button Trigger -->
+    <button id="initialStartBtn">🚀 Start Quiz Process</button>
     
-    <!-- Yeh Asli High-Quality MP3 Engine hai -->
-    <audio id="audioPlayer" controls style="width: 100%; margin-top: 15px; display: none;"></audio>
-
-    <div class="instructions" id="instructionBox" style="display: none;">
-        <strong>🎉 Audio Taiyar Hai!</strong><br>
-        Download karne ke liye player ke kone mein bane <strong>3 Dots (⋮)</strong> par click karke <strong>Download</strong> dabaayein.
+    <!-- Phase 2: Inputs Dashboard Configuration Form -->
+    <div id="inputForm">
+        <div class="form-group">
+            <label for="categoryInput">Quiz Category Name Likhein:</label>
+            <input type="text" id="categoryInput" value="General Knowledge">
+        </div>
+        <div class="form-group">
+            <label for="questionCount">Total Kitni Videos (Questions) Banani Hain?</label>
+            <input type="number" id="questionCount" min="1" max="10" value="1">
+        </div>
+        <div class="form-group">
+            <label for="timeInterval">Sawal Khatam Hone Ke Baad Timer Delay (Seconds):</label>
+            <input type="number" id="timeInterval" min="3" max="15" value="5">
+        </div>
+        <button id="generateBtn">🎬 Generate Sheet Content & Videos</button>
+    </div>
+    
+    <!-- State Tracker Update Module -->
+    <div class="status-box" id="statusBox">
+        <div id="status">System initialized. Awaiting user commands...</div>
+    </div>
+    
+    <!-- Real-time Live Screen Preview Frame Terminal -->
+    <div class="quiz-preview" id="previewArea">
+        <h4 id="pCat" style="color:#38bdf8; margin:0 0 12px 0; font-size: 16px;">Category: </h4>
+        <strong id="pQ" style="font-size:16px; display:block; margin-bottom:12px; color: #f1f5f9;">Sawal: </strong>
+        <div class="option" id="pA">A) </div>
+        <div class="option" id="pB">B) </div>
+        <div class="option" id="pC">C) </div>
+        <div class="option" id="pD">D) </div>
     </div>
 </div>
 
+<!-- Invisible HD Processing Video Canvas Studio -->
+<canvas id="videoCanvas" width="1280" height="720"></canvas>
+<!-- ========================================== -->
+<!-- HTML5 FRONTEND CODE - PART 2 (LOGIC ENGINE)-->
+<!-- ========================================== -->
+
 <script>
-    function loadAudio() {
-        const text = document.getElementById('textInput').value.trim();
-        const lang = document.getElementById('langSelect').value;
-        const player = document.getElementById('audioPlayer');
-        const instructionBox = document.getElementById('instructionBox');
+// =========================================================================
+// ⚠️ APNI PARSED LIVE SERVERS KI LINKS KO IN NEECHE WALE DONO VARIABLES MEIN UPDATE KAREIN
+// =========================================================================
+const GOOGLE_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwkcQTvtcQ3KaBCsEQPMkdClUCxfarDnWMNhMQxRu421ljlDC_Flg55ycSg6cXswuml/exec"; 
+const RENDER_API_URL = "https://onrender.com"; 
 
-        if (!text) {
-            alert("Kripya pehle text box mein kuch likhein!");
-            return;
+const initialStartBtn = document.getElementById('initialStartBtn');
+const inputForm = document.getElementById('inputForm');
+const generateBtn = document.getElementById('generateBtn');
+const statusBox = document.getElementById('statusBox');
+const statusDiv = document.getElementById('status');
+const previewArea = document.getElementById('previewArea');
+
+// Event 1: Setup panel unfold layout form trigger
+initialStartBtn.addEventListener('click', () => {
+    initialStartBtn.style.display = 'none';
+    inputForm.style.display = 'block';
+});
+
+// Event 2: Multiple sequence dynamic loops framework execution
+generateBtn.addEventListener('click', async () => {
+    const category = document.getElementById('categoryInput').value.trim();
+    const totalQuestions = parseInt(document.getElementById('questionCount').value) || 1;
+    const userTimer = parseInt(document.getElementById('timeInterval').value) || 5;
+    
+    generateBtn.disabled = true;
+    statusBox.style.display = 'block';
+    
+    for (let i = 1; i <= totalQuestions; i++) {
+        previewArea.style.display = 'none';
+        statusDiv.innerHTML = `🔄 <b>[Sawal ${i}/${totalQuestions}]</b> Google Sheet API active. Row content write kiya ja raha hai...`;
+        
+        try {
+            // Step A: Requesting row script database entry parameters logs
+            const sheetResponse = await fetch(`${GOOGLE_WEBAPP_URL}?category=${encodeURIComponent(category)}`);
+            const quizData = await sheetResponse.json();
+            if (quizData.status !== "success") throw new Error("Google Script executing failure.");
+            
+            // Updating user preview screen panel components live
+            previewArea.style.display = 'block';
+            document.getElementById('pCat').innerText = "Category: " + quizData.category;
+            document.getElementById('pQ').innerText = quizData.question;
+            document.getElementById('pA').innerText = "A) " + quizData.options[0];
+            document.getElementById('pB').innerText = "B) " + quizData.options[1];
+            document.getElementById('pC').innerText = "C) " + quizData.options[2];
+            document.getElementById('pD').innerText = "D) " + quizData.options[3];
+
+            // Mapping speech configuration lines dialogues tracking arrays
+            const speechText = `${quizData.question}. Your options are. A, ${quizData.options[0]}. B, ${quizData.options[1]}. C, ${quizData.options[2]}. And D, ${quizData.options[3]}.`;
+            statusDiv.innerHTML = `🤖 <b>[Sawal ${i}/${totalQuestions}]</b> Row data written to sheet! Render server gTTS audio wave download kar raha hai...`;
+            
+            // Step B: Fetching raw dynamic memory bytes sound streams from Python API
+            const audioResponse = await fetch(`${RENDER_API_URL}/generate-audio`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: speechText })
+            });
+            
+            if (!audioResponse.ok) throw new Error("Render pipeline communication framework failure error logging.");
+            
+            const audioBlob = await audioResponse.blob();
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const arrayBuffer = await audioBlob.arrayBuffer();
+            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            const audioDuration = audioBuffer.duration;
+            const totalDuration = audioDuration + userTimer;
+
+            statusDiv.innerHTML = `🎬 <b>[Sawal ${i}/${totalQuestions}]</b> MP3 stream buffered sync! Multiplexing HD canvas video frame layers...`;
+
+            // Step C: Processing Web Audio Node buffers and Canvas capturing frames streams
+            const canvas = document.getElementById('videoCanvas');
+            const ctx = canvas.getContext('2d');
+            const audioSource = audioContext.createBufferSource();
+            audioSource.buffer = audioBuffer;
+            const destination = audioContext.createMediaStreamDestination();
+            audioSource.connect(destination);
+
+            const canvasStream = canvas.captureStream(30); // 30 Frame Per Second capture frame rate
+            const combinedStream = new MediaStream();
+            canvasStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
+            destination.stream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
+
+            const mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm;codecs=vp9,opus' });
+            const chunks = [];
+            mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+            
+            // Managing closures asynchronous promises thread locks loop shifts
+            await new Promise((resolve) => {
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'video/mp4' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Quiz_Studio_${category.replace(/\s+/g, '_')}_Video_Row_${i}_${Date.now()}.mp4`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    resolve(); // Breaking promise loops to move forward to next sequence indexes entries
+                };
+
+                mediaRecorder.start();
+                audioSource.start(0);
+                const startTime = performance.now();
+
+                function draw() {
+                    const elapsed = (performance.now() - startTime) / 1000;
+                    
+                    // Canvas Matrix Layer 1: Flat space layout theme blueprint background colors
+                    ctx.fillStyle = "#0f172a";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // Canvas Matrix Layer 2: Heading Label Rendering Center Aligned
+                    ctx.fillStyle = "#38bdf8";
+                    ctx.font = "bold 36px Arial";
+                    ctx.textAlign = "center";
+                    ctx.fillText("Category: " + quizData.category, canvas.width / 2, 80);
+
+                    // Canvas Matrix Layer 3: Main text wrapping boundary tracking alignments paragraph drawing
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 44px Arial";
+                    ctx.textAlign = "left";
+                    wrapText(ctx, quizData.question, 100, 180, 1080, 60);
+
+                    // Canvas Matrix Layer 4: Four directional grid text points strings layouts mapping positions
+                    ctx.font = "36px Arial";
+                    ctx.fillStyle = "#cbd5e1";
+                    ctx.fillText("A) " + quizData.options[0], 120, 360);
+                    ctx.fillText("B) " + quizData.options[1], 120, 440);
+                    ctx.fillText("C) " + quizData.options[2], 120, 520);
+                    ctx.fillText("D) " + quizData.options[3], 120, 600);
+
+                    // Canvas Matrix Layer 5: Oral audio terminates countdown visualization system activates
+                    if (elapsed > audioDuration) {
+                        const remainingTimer = Math.max(0, Math.ceil(userTimer - (elapsed - audioDuration)));
+                        ctx.fillStyle = "#eab308"; // Accent countdown clock orange glow colors fill
+                        ctx.font = "bold 52px Arial";
+                        ctx.textAlign = "center";
+                        ctx.fillText(`Timer: ${remainingTimer}s`, canvas.width / 2, 680);
+                        
+                        // Canvas Matrix Layer 6: Bright green success answer flash layout reveal once countdown terminates
+                        if (remainingTimer === 0) {
+                            ctx.fillStyle = "#22c55e"; 
+                            ctx.font = "bold 40px Arial";
+                            ctx.fillText(quizData.answer, canvas.width / 2, 260);
+                        }
+                    }
+
+                    if (elapsed < totalDuration) {
+                        requestAnimationFrame(draw);
+                    } else {
+                        audioSource.stop();
+                        mediaRecorder.stop();
+                    }
+                }
+                requestAnimationFrame(draw);
+            });
+
+        } catch (err) {
+            console.error(err);
+            statusDiv.innerHTML = `❌ <b>Sawal No. ${i} looping chain sequence broken!</b> Configuration URLs link metrics, ya cross-origin access blocks permissions parameters verify karein.`;
+            break; 
         }
-
-        // Direct Clean MP3 Stream Link
-        const ttsUrl = `https://google.com{lang}&client=tw-ob&q=${encodeURIComponent(text)}`;
-        
-        // Audio player mein link set karna (Ispar browser security block nahi lagata)
-        player.src = ttsUrl;
-        player.style.display = "block";
-        instructionBox.style.display = "block";
-        
-        // Auto play
-        player.play();
     }
-</script>
+    statusDiv.innerHTML = "✅ Process finished successfully! Saari dynamic loop videos automate hokar browser directory me save aur download ho gayi hain.";
+    generateBtn.disabled = false;
+});
 
+// Horizontal pixel sizes paragraph text wrapping math equations logic helper
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    let words = text.split(' '), line = '', lines = [];
+    for(let n=0; n<words.length; n++) {
+        let testLine = line + words[n] + ' ';
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+            lines.push(line); line = words[n] + ' ';
+        } else { line = testLine; }
+    }
+    lines.push(line);
+       for(let i=0; i<lines.length; i++) { ctx.fillText(lines[i], x, y + (i * lineHeight)); }}
+    </script>
 </body>
-</html>
