@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app)  # Cross-Origin resource sharing restriction bypass setup for GitHub Pages
 
 # ⚠️ APNA RENDER WEB SERVICE KA POORA URL DEPLOYMENT KE BAAD YAHAN ENGINE MEIN UPDATE KAREIN
-RENDER_APP_URL = "https://onrender.com"
+RENDER_APP_URL = "https://audio-tspd.onrender.com"
 
 # Render Server Anti-Sleep Mechanism Framework
 def self_ping():
