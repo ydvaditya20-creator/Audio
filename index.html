@@ -1,323 +1,76 @@
-<!-- ========================================== -->
-<!-- HTML5 FRONTEND CODE - PART 1 (UI & LAYOUT) -->
-<!-- ========================================== -->
-
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Automated Video Studio Bot</title>
-    <style>
-        body { 
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif; 
-            background: #0f172a; 
-            color: #f8fafc; 
-            text-align: center; 
-            padding: 50px 20px; 
-            margin: 0;
-        }
-        .container { 
-            background: #1e293b; 
-            padding: 40px; 
-            display: inline-block; 
-            border-radius: 16px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
-            width: 100%; 
-            max-width: 560px; 
-            box-sizing: border-box;
-        }
-        h2 { color: #38bdf8; margin-top: 0; font-size: 26px; font-weight: 700; }
-        p { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
-        
-        .form-group { margin-bottom: 22px; text-align: left; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 15px; }
-        input { 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 8px; 
-            border: 1px solid #475569; 
-            font-size: 16px; 
-            box-sizing: border-box; 
-            background: #334155; 
-            color: #ffffff;
-            outline: none;
-        }
-        input:focus { border-color: #38bdf8; }
-        
-        button { 
-            width: 100%; 
-            padding: 16px; 
-            border-radius: 8px; 
-            font-size: 18px; 
-            font-weight: 700; 
-            border: none;
-            cursor: pointer; 
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-        }
-        #initialStartBtn { 
-            background: #22c55e; 
-            color: #ffffff; 
-            font-size: 20px;
-            padding: 18px;
-        }
-        #initialStartBtn:hover { background: #16a34a; transform: translateY(-1px); }
-        
-        #generateBtn { background: #38bdf8; color: #0f172a; margin-top: 15px; }
-        #generateBtn:hover { background: #0ea5e9; }
-        button:disabled { background: #64748b !important; color: #94a3b8 !important; cursor: not-allowed; transform: none !important; }
-        
-        #inputForm, .status-box, .quiz-preview { display: none; }
-        
-        .status-box { background: #334155; padding: 20px; border-radius: 8px; margin: 25px 0; font-size: 15px; border-left: 5px solid #eab308; text-align: left; line-height: 1.5; }
-        .quiz-preview { background: #111827; padding: 20px; border-radius: 10px; text-align: left; margin-top: 25px; border: 1px solid #374151; }
-        .option { color: #94a3b8; margin: 8px 0; font-size: 15px; padding-left: 5px; }
-        canvas { display: none; }
-    </style>
+<meta charset="UTF-8">
+<title>Quiz Video Generator</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f7f7f7;
+padding:15px;
+}
+
+button{
+padding:10px;
+margin:5px;
+}
+
+textarea{
+width:100%;
+height:80px;
+margin-bottom:10px;
+}
+
+#questions{
+margin-top:20px;
+}
+
+canvas{
+width:100%;
+max-width:900px;
+border:1px solid #000;
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>⚡ AI Quiz Video Studio Bot</h2>
-    <p>Auto Sheet Database Content Generator & Media Multiplexer</p>
-    
-    <!-- Phase 1: Welcome Button Trigger -->
-    <button id="initialStartBtn">🚀 Start Quiz Process</button>
-    
-    <!-- Phase 2: Inputs Dashboard Configuration Form -->
-    <div id="inputForm">
-        <div class="form-group">
-            <label for="categoryInput">Quiz Category Name Likhein:</label>
-            <input type="text" id="categoryInput" value="General Knowledge">
-        </div>
-        <div class="form-group">
-            <label for="questionCount">Total Kitni Videos (Questions) Banani Hain?</label>
-            <input type="number" id="questionCount" min="1" max="10" value="1">
-        </div>
-        <div class="form-group">
-            <label for="timeInterval">Sawal Khatam Hone Ke Baad Timer Delay (Seconds):</label>
-            <input type="number" id="timeInterval" min="3" max="15" value="5">
-        </div>
-        <button id="generateBtn">🎬 Generate Sheet Content & Videos</button>
-    </div>
-    
-    <!-- State Tracker Update Module -->
-    <div class="status-box" id="statusBox">
-        <div id="status">System initialized. Awaiting user commands...</div>
-    </div>
-    
-    <!-- Real-time Live Screen Preview Frame Terminal -->
-    <div class="quiz-preview" id="previewArea">
-        <h4 id="pCat" style="color:#38bdf8; margin:0 0 12px 0; font-size: 16px;">Category: </h4>
-        <strong id="pQ" style="font-size:16px; display:block; margin-bottom:12px; color: #f1f5f9;">Sawal: </strong>
-        <div class="option" id="pA">A) </div>
-        <div class="option" id="pB">B) </div>
-        <div class="option" id="pC">C) </div>
-        <div class="option" id="pD">D) </div>
-    </div>
-</div>
+<h2>Quiz Video Generator</h2>
 
-<!-- Invisible HD Processing Video Canvas Studio -->
-<canvas id="videoCanvas" width="1280" height="720"></canvas>
-<!-- ========================================== -->
-<!-- HTML5 FRONTEND CODE - PART 2 (LOGIC ENGINE)-->
-<!-- ========================================== -->
+<button id="startBtn">
+Load Quiz
+</button>
 
-<script>
-// =========================================================================
-// ⚠️ APNI PARSED LIVE SERVERS KI LINKS KO IN NEECHE WALE DONO VARIABLES MEIN UPDATE KAREIN
-// =========================================================================
-const GOOGLE_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwkcQTvtcQ3KaBCsEQPMkdClUCxfarDnWMNhMQxRu421ljlDC_Flg55ycSg6cXswuml/exec"; 
-const RENDER_API_URL = "https://audio-tspd.onrender.com"; 
-<!-- ========================================== -->
-<!-- HTML5 FRONTEND CODE - PART 2 (REDIRECTS RESOLVER) -->
-<!-- ========================================== -->
+<button id="audioBtn">
+Generate Audio
+</button>
 
+<button id="videoBtn">
+Generate Talking Video
+</button>
 
+<button id="downloadBtn">
+Download
+</button>
 
-const initialStartBtn = document.getElementById('initialStartBtn');
-const inputForm = document.getElementById('inputForm');
-const generateBtn = document.getElementById('generateBtn');
-const statusBox = document.getElementById('statusBox');
-const statusDiv = document.getElementById('status');
-const previewArea = document.getElementById('previewArea');
+<hr>
 
-initialStartBtn.addEventListener('click', () => {
-    initialStartBtn.style.display = 'none';
-    inputForm.style.display = 'block';
-});
+<div id="questions"></div>
 
-generateBtn.addEventListener('click', async () => {
-    const category = document.getElementById('categoryInput').value.trim();
-    const totalQuestions = parseInt(document.getElementById('questionCount').value) || 1;
-    const userTimer = parseInt(document.getElementById('timeInterval').value) || 5;
-    
-    generateBtn.disabled = true;
-    statusBox.style.display = 'block';
-    
-    for (let i = 1; i <= totalQuestions; i++) {
-        previewArea.style.display = 'none';
-        statusDiv.innerHTML = `🔄 <b>[Sawal ${i}/${totalQuestions}]</b> Google Script framework network packet send kiya ja raha hai...`;
-        
-        try {
-            const finalSheetApiUrl = `${GOOGLE_WEBAPP_URL}?category=${encodeURIComponent(category)}`;
-            
-            // 💡 CRITICAL BYPASS: Google Web App Redirect structure handling logic configuration
-            const sheetResponse = await fetch(finalSheetApiUrl, {
-                method: "GET",
-                mode: "cors", // Mandatory configuration token flag
-                headers: { "Accept": "application/json" }
-            });
-            
-            if (!sheetResponse.ok) throw new Error("Network layer communication breakdown.");
-            
-            const quizData = await sheetResponse.json();
-            if (!quizData || quizData.status !== "success") throw new Error("Google database credentials tracking failed.");
-            
-            // Interface metrics mapping load updates
-            previewArea.style.display = 'block';
-            document.getElementById('pCat').innerText = "Category: " + quizData.category;
-            document.getElementById('pQ').innerText = quizData.question;
-            document.getElementById('pA').innerText = "A) " + quizData.options[0];
-            document.getElementById('pB').innerText = "B) " + quizData.options[1];
-            document.getElementById('pC').innerText = "C) " + quizData.options[2];
-            document.getElementById('pD').innerText = "D) " + quizData.options[3];
+<audio id="audio" controls></audio>
 
-            const speechText = `${quizData.question}. Aapke options hain. A, ${quizData.options[0]}. B, ${quizData.options[1]}. C, ${quizData.options[2]}. Aur D, ${quizData.options[3]}.`;
-            statusDiv.innerHTML = `🤖 <b>[Sawal ${i}/${totalQuestions}]</b> ✅ Sheet me successfully data likh diya gaya! Voice rendering audio load ho rahi hai...`;
-            
-            const audioResponse = await fetch(`${RENDER_API_URL}/generate-audio`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: speechText })
-            });
-            
-            if (!audioResponse.ok) throw new Error("Render pipeline communication framework failure.");
-            
-            const audioBlob = await audioResponse.blob();
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            
-            if (audioContext.state === 'suspended') {
-                await audioContext.resume();
-            }
+<br><br>
 
-            const arrayBuffer = await audioBlob.arrayBuffer();
-            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-            const audioDuration = audioBuffer.duration;
-            const totalDuration = audioDuration + userTimer;
+<canvas
+id="canvas"
+width="1280"
+height="720">
+</canvas>
 
-            statusDiv.innerHTML = `🎬 <b>[Sawal ${i}/${totalQuestions}]</b> Voice streaming ready. Video file process ho rahi hai...`;
+<script src="script.js"></script>
 
-            const canvas = document.getElementById('videoCanvas');
-            const ctx = canvas.getContext('2d');
-            const audioSource = audioContext.createBufferSource();
-            audioSource.buffer = audioBuffer;
-            const destination = audioContext.createMediaStreamDestination();
-            audioSource.connect(destination);
-
-            const canvasStream = canvas.captureStream(30); 
-            const combinedStream = new MediaStream();
-            canvasStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
-            destination.stream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
-
-            let options = { mimeType: 'video/webm;codecs=vp9,opus' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                options = { mimeType: 'video/webm;codecs=vp8,opus' };
-            }
-
-            const mediaRecorder = new MediaRecorder(combinedStream, options);
-            const chunks = [];
-            mediaRecorder.ondataavailable = (e) => {
-                if (e.data && e.data.size > 0) chunks.push(e.data);
-            };
-            
-            await new Promise((resolve) => {
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(chunks, { type: 'video/mp4' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `Quiz_Bot_Row_${i}_${Date.now()}.mp4`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    resolve(); 
-                };
-
-                mediaRecorder.start();
-                audioSource.start(0);
-                const startTime = performance.now();
-
-                function draw() {
-                    const elapsed = (performance.now() - startTime) / 1000;
-                    
-                    ctx.fillStyle = "#0f172a";
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    ctx.fillStyle = "#38bdf8";
-                    ctx.font = "bold 36px Arial";
-                    ctx.textAlign = "center";
-                    ctx.fillText("Category: " + quizData.category, canvas.width / 2, 80);
-
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "bold 44px Arial";
-                    ctx.textAlign = "left";
-                    wrapText(ctx, quizData.question, 100, 180, 1080, 60);
-
-                    ctx.font = "36px Arial";
-                    ctx.fillStyle = "#cbd5e1";
-                    ctx.fillText("A) " + quizData.options[0], 120, 360);
-                    ctx.fillText("B) " + quizData.options[1], 120, 440);
-                    ctx.fillText("C) " + quizData.options[2], 120, 520);
-                    ctx.fillText("D) " + quizData.options[3], 120, 600);
-
-                    if (elapsed > audioDuration) {
-                        const remainingTimer = Math.max(0, Math.ceil(userTimer - (elapsed - audioDuration)));
-                        ctx.fillStyle = "#eab308"; 
-                        ctx.font = "bold 52px Arial";
-                        ctx.textAlign = "center";
-                        ctx.fillText(`Timer: ${remainingTimer}s`, canvas.width / 2, 680);
-                        
-                        if (remainingTimer === 0) {
-                            ctx.fillStyle = "#22c55e"; 
-                            ctx.font = "bold 40px Arial";
-                            ctx.fillText(quizData.answer, canvas.width / 2, 260);
-                        }
-                    }
-
-                    if (elapsed < totalDuration) {
-                        requestAnimationFrame(draw);
-                    } else {
-                        audioSource.stop();
-                        mediaRecorder.stop();
-                    }
-                }
-                requestAnimationFrame(draw);
-            });
-
-        } catch (err) {
-            console.error(err);
-            statusDiv.innerHTML = `❌ <b>Sawal No. ${i} executing sequence chain broken!</b> URL parameters alignment recheck karein.`;
-            break; 
-        }
-    }
-    statusDiv.innerHTML = "✅ Process finished successfully! Saari videos write aur download ho gayi hain.";
-    generateBtn.disabled = false;
-});
-
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-    let words = text.split(' '), line = '', lines = [];
-    for(let n=0; n<words.length; n++) {
-        let testLine = line + words[n] + ' ';
-        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-            lines.push(line); line = words[n] + ' ';
-        } else { line = testLine; }
-    }
-    lines.push(line);
-    for(let i=0; i<lines.length; i++) { ctx.fillText(lines[i], x, y + (i * lineHeight)); }
-}
-</script>
 </body>
 </html>
-
