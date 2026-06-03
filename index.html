@@ -39,7 +39,7 @@ border:1px solid #000;
 <body>
 
 <h2>Quiz Video Generator</h2>
-<button onclick="testAPI()">Test API</button>
+
 <button id="startBtn">
 Load Quiz
 </button>
@@ -69,6 +69,19 @@ id="canvas"
 width="1280"
 height="720">
 </canvas>
+  <h3>Status Log</h3>
+<div id="logBox"
+     style="
+     height:250px;
+     overflow:auto;
+     border:1px solid #000;
+     padding:10px;
+     background:#f5f5f5;">
+</div>
+
+<button onclick="testAPI()">
+Test API
+</button>
 
 <script src="script.js"></script>
 
