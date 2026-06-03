@@ -257,3 +257,174 @@ text,
 );
 
 }
+videoBtn.onclick =
+async ()=>{
+
+if(!audioBlob){
+
+alert(
+"Generate audio first"
+);
+
+return;
+
+}
+
+const videoStream =
+canvas.captureStream(
+30
+);
+
+const audioContext =
+new AudioContext();
+
+const audio =
+new Audio(
+audioPlayer.src
+);
+
+const source =
+audioContext
+.createMediaElementSource(
+audio
+);
+
+const dest =
+audioContext
+.createMediaStreamDestination();
+
+source.connect(dest);
+
+source.connect(
+audioContext.destination
+);
+
+const stream =
+new MediaStream([
+
+...videoStream
+.getVideoTracks(),
+
+...dest.stream
+.getAudioTracks()
+
+]);
+
+const recorder =
+new MediaRecorder(
+stream
+);
+
+const chunks = [];
+
+recorder.ondataavailable =
+e=>chunks.push(
+e.data
+);
+
+recorder.start();
+
+audio.play();
+
+let secPerQuestion =
+audio.duration /
+questions.length;
+
+if(
+!secPerQuestion ||
+isNaN(
+secPerQuestion
+)
+){
+
+secPerQuestion = 4;
+
+}
+
+for(
+let i=0;
+i<questions.length;
+i++
+){
+
+let text =
+document
+.getElementById(
+"q"+i
+)
+.value;
+
+drawQuestion(
+"Question "
++(i+1)+
+"\n\n"+
+text
+);
+
+await new Promise(
+r=>
+setTimeout(
+r,
+secPerQuestion
+*1000
+)
+);
+
+}
+
+audio.onended =
+()=>{
+
+recorder.stop();
+
+};
+
+recorder.onstop =
+()=>{
+
+finalVideo =
+new Blob(
+chunks,
+{
+type:
+"video/webm"
+}
+);
+
+alert(
+"Talking Video Ready"
+);
+
+};
+
+};
+
+downloadBtn.onclick =
+()=>{
+
+if(!finalVideo){
+
+alert(
+"Generate video first"
+);
+
+return;
+
+}
+
+let a =
+document.createElement(
+"a"
+);
+
+a.href =
+URL.createObjectURL(
+finalVideo
+);
+
+a.download =
+"quiz_video.webm";
+
+a.click();
+
+};
